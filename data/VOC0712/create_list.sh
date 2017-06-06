@@ -6,11 +6,12 @@ bash_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 for dataset in trainval test
 do
   dst_file=$bash_dir/$dataset.txt
+  echo "dest file = $dst_file"
   if [ -f $dst_file ]
   then
     rm -f $dst_file
   fi
-  for name in VOC2007 VOC2012
+  for name in VOCMY
   do
     if [[ $dataset == "test" && $name == "VOC2012" ]]
     then
@@ -18,8 +19,10 @@ do
     fi
     echo "Create list for $name $dataset..."
     dataset_file=$root_dir/$name/$sub_dir/$dataset.txt
+    #echo "$dataset_file"
 
     img_file=$bash_dir/$dataset"_img.txt"
+    #echo "$img_file"
     cp $dataset_file $img_file
     sed -i "s/^/$name\/JPEGImages\//g" $img_file
     sed -i "s/$/.jpg/g" $img_file
@@ -38,6 +41,9 @@ do
   # Generate image name and size infomation.
   if [ $dataset == "test" ]
   then
+    echo "$bash_dir"
+    echo "root dir = $root_dir"
+    echo "destination file = $dst_file"
     $bash_dir/../../build/tools/get_image_size $root_dir $dst_file $bash_dir/$dataset"_name_size.txt"
   fi
 

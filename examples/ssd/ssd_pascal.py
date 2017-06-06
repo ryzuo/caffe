@@ -263,7 +263,7 @@ pretrain_model = "models/VGGNet/VGG_ILSVRC_16_layers_fc_reduced.caffemodel"
 label_map_file = "data/VOC0712/labelmap_voc.prototxt"
 
 # MultiBoxLoss parameters.
-num_classes = 21
+num_classes = 3
 share_location = True
 background_label_id=0
 train_on_diff_gt = True
@@ -329,7 +329,7 @@ clip = False
 
 # Solver parameters.
 # Defining which GPUs to use.
-gpus = "0,1,2,3"
+gpus = "0,1"
 gpulist = gpus.split(",")
 num_gpus = len(gpulist)
 
@@ -342,7 +342,9 @@ device_id = 0
 batch_size_per_device = batch_size
 if num_gpus > 0:
   batch_size_per_device = int(math.ceil(float(batch_size) / num_gpus))
+  print('>>> batch_size_per_device = ' + str(batch_size_per_device))
   iter_size = int(math.ceil(float(accum_batch_size) / (batch_size_per_device * num_gpus)))
+  print('>>> iter_size = ' + str(iter_size))
   solver_mode = P.Solver.GPU
   device_id = int(gpulist[0])
 
@@ -356,7 +358,7 @@ elif normalization_mode == P.Loss.FULL:
   base_lr *= 2000.
 
 # Evaluate on whole test set.
-num_test_image = 4952
+num_test_image = 2033
 test_batch_size = 8
 # Ideally test_batch_size should be divisible by num_test_image,
 # otherwise mAP will be slightly off the true value.
@@ -428,6 +430,7 @@ make_if_not_exist(snapshot_dir)
 
 # Create train net.
 net = caffe.NetSpec()
+print('Creating annotated data layer...')
 net.data, net.label = CreateAnnotatedDataLayer(train_data, batch_size=batch_size_per_device,
         train=True, output_label=True, label_map_file=label_map_file,
         transform_param=train_transform_param, batch_sampler=batch_sampler)
@@ -460,7 +463,6 @@ net = caffe.NetSpec()
 net.data, net.label = CreateAnnotatedDataLayer(test_data, batch_size=test_batch_size,
         train=False, output_label=True, label_map_file=label_map_file,
         transform_param=test_transform_param)
-
 VGGNetBody(net, from_layer='data', fully_conv=True, reduced=True, dilated=True,
     dropout=False)
 

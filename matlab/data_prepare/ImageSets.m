@@ -4,7 +4,7 @@
 % Change the 4 variables below if needed
 xmlfilepath='/home/ai/data/VOCdevkit/VOCMY/Annotations/';
 txtsavepath='/home/ai/data/VOCdevkit/VOCMY/ImageSets/Main/';
-trainval_percent=0.5;% Percentage of trainval data in the entire data collection, the rests are for test data
+trainval_percent=0.8;% Percentage of trainval data in the entire data collection, the rests are for test data
 train_percent=0.5;% Percentage of train data in the trainval collection, the rests are for val
 
 xmlfile=dir(xmlfilepath);
